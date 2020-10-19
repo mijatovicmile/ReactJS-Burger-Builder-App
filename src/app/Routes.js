@@ -7,12 +7,18 @@ const BurgerBuilder = lazy(() =>
   import('./containers/BurgerBuilder/BurgerBuilder')
 );
 const Checkout = lazy(() => import('./containers/Checkout/Checkout'));
+const Orders = lazy(() => import('./containers/Orders/Orders'));
 
 const routes = () => [
   { path: '/', component: lazyLoad(BurgerBuilder), options: { exact: true } },
   {
     path: '/checkout',
     component: lazyLoad(Checkout),
+    options: {},
+  },
+  {
+    path: '/orders',
+    component: lazyLoad(Orders),
     options: {},
   },
 ];
