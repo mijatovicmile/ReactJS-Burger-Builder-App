@@ -92,32 +92,20 @@ const BurgerBuilder = (props) => {
   };
 
   const purchaseContinueHandler = () => {
-    setSpinner({ isLoading: true });
-    const order = {
-      ingredients: burger.ingredients,
-      price: burger.totalPrice,
-      customer: {
-        name: 'Mile Mijatovic',
-        address: {
-          street: 'Test Street',
-          zipCode: '76300',
-          city: 'Bijeljina',
-        },
-        email: 'mile@milemijatovic.com',
-      },
-      deliveryMethod: 'fastest',
-    };
-    axios
-      .post('/orders.json', order)
-      .then((response) => {
-        setSpinner({ isLoading: false });
-        setPurchaseMode({ purchaseMode: false });
-      })
-      .catch((error) => {
-        setSpinner({ isLoading: false });
-        setPurchaseMode({ purchaseMode: false });
-      });
+    const queryParams = [];
+    for (let i in burger.ingredients) {
+      queryParams.push(
+        encodeURIComponent(i) + '=' + encodeURIComponent(burger.ingredients[i])
+      );
+    }
+    queryParams.push('price=' + burger.totalPrice);
+    const queryString = queryParams.join('&');
+    props.history.push({
+      pathname: '/checkout',
+      search: '?' + queryString,
+    });
   };
+
   let orderSummary = (
     <OrderSummary
       ingredients={burger.ingredients}
