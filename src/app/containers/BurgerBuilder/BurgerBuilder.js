@@ -106,6 +106,13 @@ const BurgerBuilder = (props) => {
     });
   };
 
+  const disabledInfo = {
+    ...burger.ingredients,
+  };
+  for (let key in disabledInfo) {
+    disabledInfo[key] = disabledInfo[key] <= 0;
+  }
+
   let orderSummary = (
     <OrderSummary
       ingredients={burger.ingredients}
@@ -117,7 +124,6 @@ const BurgerBuilder = (props) => {
   if (spinner.isLoading) {
     orderSummary = <Spinner />;
   }
-
   return (
     <React.Fragment>
       <Burger ingredients={burger.ingredients} />
@@ -125,6 +131,7 @@ const BurgerBuilder = (props) => {
         ingredientAdded={addIngredientHandler}
         ingredientRemoved={removeIngredientHandler}
         ordered={purchaseModeHandler}
+        buttonDisabled={disabledInfo}
         price={burger.totalPrice}
         purchasable={purchasable.purchasable}
       />
