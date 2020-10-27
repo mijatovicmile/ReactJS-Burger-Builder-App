@@ -1,19 +1,33 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import Layout from './hoc/Layout/Layout';
 import Routes from './Routes';
 
-function App() {
-  return (
-    <div>
-      <Router>
-        <Layout>
-          <Routes />
-        </Layout>
-      </Router>
-    </div>
-  );
+import * as actions from './store/actions/index';
+
+class App extends Component {
+  componentDidMount() {
+    this.props.onAutoSignUp();
+  }
+  render() {
+    return (
+      <div>
+        <Router>
+          <Layout>
+            <Routes />
+          </Layout>
+        </Router>
+      </div>
+    );
+  }
 }
 
-export default App;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAutoSignUp: () => dispatch(actions.authCheckState())
+  };
+};
+
+export default connect(null, mapDispatchToProps)(App);

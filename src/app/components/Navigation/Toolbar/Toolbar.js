@@ -10,7 +10,7 @@ const toolbar = (props) => {
         <h1 style={{ color: 'white', fontSize: 25 }}>Burger Builder</h1>
       </div>
       <nav>
-        <NavigationItems />
+        <NavigationItems isAuthenticated={props.isAuth} />
       </nav>
     </header>
   );
