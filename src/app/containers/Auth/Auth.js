@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import Input from '../../components/UI/Input/Input';
@@ -13,122 +13,114 @@ import * as actions from '../../store/actions/index';
 import { updateObject } from '../../utils/updateObject';
 import { checkValidity } from '../../utils/validation';
 
-class Auth extends Component {
-  state = {
-    controls: {
-      email: {
-        elementType: 'input',
-        elementConfig: { type: 'email', placeholder: 'Email' },
-        value: '',
-        validation: {
-          required: true,
-          isEmail: true
-        },
-        valid: false,
-        touched: false
+const Auth = (props) => {
+  const [authForm, setAuthForm] = useState({
+    email: {
+      elementType: 'input',
+      elementConfig: { type: 'email', placeholder: 'Email' },
+      value: '',
+      validation: {
+        required: true,
+        isEmail: true
       },
-      password: {
-        elementType: 'input',
-        elementConfig: { type: 'password', placeholder: 'Password' },
-        value: '',
-        validation: {
-          required: true,
-          minLength: 6
-        },
-        valid: false,
-        touched: false
-      }
+      valid: false,
+      touched: false
     },
-    isSignUp: true
-  };
-
-  componentDidMount() {
-    if (!this.props.buildingBurger && this.props.authRedirectPath !== '/') {
-      this.props.onSetAuthRedirectPath();
+    password: {
+      elementType: 'input',
+      elementConfig: { type: 'password', placeholder: 'Password' },
+      value: '',
+      validation: {
+        required: true,
+        minLength: 6
+      },
+      valid: false,
+      touched: false
     }
-  }
+  });
+  const [signUp, setSignUp] = useState(true);
 
-  inputChangedHandler = (event, controlName) => {
-    const updatedControls = updateObject(this.state.controls, {
-      [controlName]: updateObject(this.state.controls[controlName], {
+  const { buildingBurger, authRedirectPath, onSetAuthRedirectPath } = props;
+
+  useEffect(() => {
+    if (!buildingBurger && authRedirectPath !== '/') {
+      onSetAuthRedirectPath();
+    }
+  }, [buildingBurger, authRedirectPath, onSetAuthRedirectPath]);
+
+  const inputChangedHandler = (event, controlName) => {
+    const updatedControls = updateObject(authForm, {
+      [controlName]: updateObject(authForm[controlName], {
         value: event.target.value,
         valid: checkValidity(
           event.target.value,
-          this.state.controls[controlName].validation
+          authForm[controlName].validation
         ),
         touched: true
       })
     });
-    this.setState({ controls: updatedControls });
+    setAuthForm(updatedControls);
   };
 
-  submitHandler = (event) => {
+  const submitHandler = (event) => {
     event.preventDefault();
-    this.props.onAuth(
-      this.state.controls.email.value,
-      this.state.controls.password.value,
-      this.state.isSignUp
-    );
+    props.onAuth(authForm.email.value, authForm.password.value, signUp);
   };
 
-  switchAuthModeHandler = () => {
-    this.setState((prevState) => {
-      return { isSignUp: !prevState.isSignUp };
+  const switchAuthModeHandler = () => {
+    setSignUp(!signUp);
+  };
+
+  const formElementsArray = [];
+
+  for (let element in authForm) {
+    formElementsArray.push({
+      id: element,
+      config: authForm[element]
     });
-  };
-
-  render() {
-    const formElementsArray = [];
-
-    for (let element in this.state.controls) {
-      formElementsArray.push({
-        id: element,
-        config: this.state.controls[element]
-      });
-    }
-
-    let form = formElementsArray.map((formElement) => (
-      <Input
-        key={formElement.id}
-        elementType={formElement.config.elementType}
-        elementConfig={formElement.config.elementConfig}
-        value={formElement.config.value}
-        invalid={!formElement.config.valid}
-        shouldValidate={formElement.config.validation}
-        touched={formElement.config.touched}
-        changed={(event) => this.inputChangedHandler(event, formElement.id)}
-      />
-    ));
-
-    if (this.props.loading) {
-      form = <Spinner />;
-    }
-
-    let errorMessage = null;
-    if (this.props.error) {
-      errorMessage = <p>{this.props.error.message}</p>;
-    }
-
-    let authRedirect = null;
-    if (this.props.isAuthenticated) {
-      authRedirect = <Redirect to={this.props.authRedirectPath} />;
-    }
-
-    return (
-      <div className={classes.Auth}>
-        {authRedirect}
-        {errorMessage}
-        <form onSubmit={this.submitHandler}>
-          {form}
-          <Button btnType="Success">Submit</Button>
-        </form>
-        <Button clicked={this.switchAuthModeHandler} btnType="Danger">
-          Swith to {this.state.isSignUp ? 'Sign In' : 'Sign Up'}
-        </Button>
-      </div>
-    );
   }
-}
+
+  let form = formElementsArray.map((formElement) => (
+    <Input
+      key={formElement.id}
+      elementType={formElement.config.elementType}
+      elementConfig={formElement.config.elementConfig}
+      value={formElement.config.value}
+      invalid={!formElement.config.valid}
+      shouldValidate={formElement.config.validation}
+      touched={formElement.config.touched}
+      changed={(event) => inputChangedHandler(event, formElement.id)}
+    />
+  ));
+
+  if (props.loading) {
+    form = <Spinner />;
+  }
+
+  let errorMessage = null;
+  if (props.error) {
+    errorMessage = <p>{props.error.message}</p>;
+  }
+
+  let authRedirect = null;
+  if (props.isAuthenticated) {
+    authRedirect = <Redirect to={props.authRedirectPath} />;
+  }
+
+  return (
+    <div className={classes.Auth}>
+      {authRedirect}
+      {errorMessage}
+      <form onSubmit={submitHandler}>
+        {form}
+        <Button btnType="Success">Submit</Button>
+      </form>
+      <Button clicked={switchAuthModeHandler} btnType="Danger">
+        Swith to {signUp ? 'Sign In' : 'Sign Up'}
+      </Button>
+    </div>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {

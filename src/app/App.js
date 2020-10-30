@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -7,22 +7,23 @@ import Routes from './Routes';
 
 import * as actions from './store/actions/index';
 
-class App extends Component {
-  componentDidMount() {
-    this.props.onAutoSignUp();
-  }
-  render() {
-    return (
-      <div>
-        <Router>
-          <Layout>
-            <Routes />
-          </Layout>
-        </Router>
-      </div>
-    );
-  }
-}
+const App = (props) => {
+  const { onAutoSignUp } = props;
+
+  useEffect(() => {
+    onAutoSignUp();
+  }, [onAutoSignUp]);
+
+  return (
+    <div>
+      <Router>
+        <Layout>
+          <Routes />
+        </Layout>
+      </Router>
+    </div>
+  );
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
