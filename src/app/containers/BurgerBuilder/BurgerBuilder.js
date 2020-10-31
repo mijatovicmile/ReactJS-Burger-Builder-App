@@ -12,7 +12,7 @@ import axios from '../../services/request.service';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
-const BurgerBuilder = (props) => {
+export const BurgerBuilder = (props) => {
   const [purchaseMode, setPurchaseMode] = useState(false);
 
   const { onInitIngredients } = props;
