@@ -7,6 +7,8 @@ import Routes from './Routes';
 
 import * as actions from './store/actions/index';
 
+import './App.css';
+
 const App = (props) => {
   const { onAutoSignUp } = props;
 
@@ -15,13 +17,11 @@ const App = (props) => {
   }, [onAutoSignUp]);
 
   return (
-    <div>
-      <Router>
-        <Layout>
-          <Routes />
-        </Layout>
-      </Router>
-    </div>
+    <Router>
+      <Layout>
+        <Routes />
+      </Layout>
+    </Router>
   );
 };
 

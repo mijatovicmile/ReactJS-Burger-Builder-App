@@ -58,3 +58,17 @@
   background-color: #99703f;
   color: white;
 }
+
+@media (max-width: 350px) {
+  .BuildControl {
+    display: block;
+    text-align: center;
+  }
+  .BuildControl .Label {
+    width: auto;
+  }
+  .BuildControl .Less,
+  .BuildControl .More {
+    display: inline-block;
+  }
+}

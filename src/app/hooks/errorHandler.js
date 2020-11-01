@@ -19,7 +19,8 @@ export default (httpClient) => {
       httpClient.interceptors.request.eject(reqInterceptor);
       httpClient.interceptors.response.eject(resInterceptor);
     };
-  }, []);
+    // eslint-disable-next-line
+  }, [reqInterceptor, resInterceptor]);
 
   const errorConfirmedHandler = () => {
     setError(null);
