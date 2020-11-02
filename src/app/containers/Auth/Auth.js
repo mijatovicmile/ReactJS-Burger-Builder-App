@@ -99,7 +99,7 @@ const Auth = (props) => {
 
   let errorMessage = null;
   if (props.error) {
-    errorMessage = <p>{props.error.message}</p>;
+    errorMessage = <p>{props.error.message.replace('_', ' ')}</p>;
   }
 
   let authRedirect = null;
@@ -110,7 +110,7 @@ const Auth = (props) => {
   return (
     <div className={classes.Auth}>
       {authRedirect}
-      {errorMessage}
+      <span style={{ color: 'red' }}>{errorMessage}</span>
       <form onSubmit={submitHandler}>
         {form}
         <Button btnType="Success">Submit</Button>
